@@ -1,0 +1,49 @@
+spring: 
+  application: 
+    name: "@project.name@"
+  config: 
+    name: "@project.name@"
+eureka:
+  client:
+    enabled: false
+  instance: 
+    metadata-map: 
+      version:  "@project.version@"
+      artifact: "@project.artifactId@"
+      name: "@project.name@"
+      description: "@project.description@"
+---
+
+spring:
+  profiles: local-int
+eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@localhost:${discovery.server.port:8761}/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 10
+
+---
+
+spring:
+  profiles: docker-demo
+eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@ascent-discovery:${discovery.server.port:8761}/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 20
+---
+
+spring:
+    profiles: aws-ci, aws-dev, aws-stage, aws-prod
+eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer1.name:ascent-discovery}:${discovery.server.port:8761}/eureka/,http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer2.name:ascent-discovery}:${discovery.server.port:8761}/eureka/
+    preferSameZoneEureka: true
