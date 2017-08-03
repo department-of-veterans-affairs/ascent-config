@@ -1,0 +1,49 @@
+server:  
+  port: ${config.server.port:8760}
+info:  
+  build:
+    version:  "@project.version@"
+    artifact: "@project.artifactId@"
+    name: "@project.name@"
+    description: "@project.description@"
+spring:
+  cloud:
+    bus:
+      enabled: false
+    config:
+      server:
+        git:
+          uri: git@github.com:department-of-veterans-affairs/ascent-ext-configs.git
+          passphrase: ${git.passphrase}
+          strictHostKeyChecking: false
+          cloneOnStart: true
+          timeout: 10
+          searchPaths: ascent*
+security:
+  basic:
+    enabled: true
+  user:
+    name: ${config.username:config}
+    password: ${config.password:default}
+encrypt:
+  #ConfigurationProperties-KeyProperties
+  keyStore:
+    location: classpath:/configServer.jks
+    #password and secret can be provided as startup or env variables
+    password: configmein
+    alias: configkey
+    secret: configme
+management:
+  security:
+    enabled: false
+---
+spring:
+  profiles: docker-demo
+  cloud:
+    bus:
+      enabled: true
+  rabbitmq:
+    host: ${messagebroker.host:ascent-amqp}
+    port: ${messagebroker.port:5672}
+    username: ${messagebroker.username:guest}
+    password: ${messagebroker.password:guest}
