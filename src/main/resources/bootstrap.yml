@@ -3,6 +3,18 @@ spring:
     name: "@project.name@"
   config: 
     name: "@project.name@"
+  cloud:
+    vault:
+      host: ${VAULT_ADDR}
+      connection-timeout: 5000
+      read-timeout: 15000
+      token: ${VAULT_TOKEN}      
+      scheme: http
+#      authentication: APPROLE
+#      app-role:
+#        role-id: b1c846d4-5759-b2fa-89c3-fe3fbe04c1f6
+#        secret-id: 1f9fa355-4b58-21b9-eebc-c906602a7b00
+#        app-role-path: approle
 eureka:
   client:
     enabled: false
@@ -12,6 +24,7 @@ eureka:
       artifact: "@project.artifactId@"
       name: "@project.name@"
       description: "@project.description@"
+
 ---
 
 spring:
