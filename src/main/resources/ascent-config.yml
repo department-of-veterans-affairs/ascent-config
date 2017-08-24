@@ -1,4 +1,4 @@
-server:  
+server:
   port: ${config.server.port:8760}
 info:  
   build:
@@ -12,7 +12,10 @@ spring:
       enabled: false
     config:
       server:
+        vault:
+          order: 0
         git:
+          order: 1
           uri: git@github.com:department-of-veterans-affairs/ascent-ext-configs.git
           passphrase: ${git.passphrase}
           strictHostKeyChecking: false
