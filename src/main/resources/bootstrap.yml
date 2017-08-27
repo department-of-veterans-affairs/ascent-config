@@ -3,6 +3,8 @@ spring:
     name: "@project.name@"
   config: 
     name: "@project.name@"
+  profiles:
+    include: git,vault
 eureka:
   client:
     enabled: false
@@ -17,6 +19,7 @@ eureka:
 
 spring:
   profiles: local-int
+
 eureka:
   client:
     enabled: true
@@ -25,12 +28,11 @@ eureka:
   instance:
     leaseRenewalIntervalInSeconds: 5
     leaseExpirationDurationInSeconds: 10
-
 ---
 
 spring:
-  profiles: docker-demo
-  include: vault,git
+  profiles: docker-demo 
+
 eureka:
   client:
     enabled: true
