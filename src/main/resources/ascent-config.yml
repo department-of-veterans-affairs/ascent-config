@@ -14,6 +14,9 @@ spring:
       server:
         vault:
           order: 0
+          host: ${VAULT_HOST}
+          port: 8200
+          scheme: http          
         git:
           order: 1
           uri: git@github.com:department-of-veterans-affairs/ascent-ext-configs.git
