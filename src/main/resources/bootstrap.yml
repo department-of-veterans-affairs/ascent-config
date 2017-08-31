@@ -29,9 +29,8 @@ eureka:
 ---
 
 spring:
-  profiles:
-    active: docker-demo
-    include: vault, git
+  profiles: docker-demo
+spring.profiles.include: vault, git
 eureka:
   client:
     enabled: true
@@ -43,9 +42,8 @@ eureka:
 ---
 
 spring:
-  profiles:
-    active: aws-ci, aws-dev, aws-stage, aws-prod
-    include: vault,git
+  profiles: aws-ci, aws-dev, aws-stage, aws-prod
+spring.profiles.include: vault,git
 eureka:
   client:
     enabled: true
