@@ -1,4 +1,4 @@
-server:  
+server:
   port: ${config.server.port:8760}
 info:  
   build:
@@ -12,7 +12,13 @@ spring:
       enabled: false
     config:
       server:
+        vault:
+          order: 0
+          host: ${VAULT_HOST}
+          port: 8200
+          scheme: http          
         git:
+          order: 1
           uri: git@github.com:department-of-veterans-affairs/ascent-ext-configs.git
           passphrase: ${git.passphrase}
           strictHostKeyChecking: false
@@ -25,14 +31,6 @@ security:
   user:
     name: ${config.username:config}
     password: ${config.password:default}
-encrypt:
-  #ConfigurationProperties-KeyProperties
-  keyStore:
-    location: classpath:/configServer.jks
-    #password and secret can be provided as startup or env variables
-    password: configmein
-    alias: configkey
-    secret: configme
 management:
   security:
     enabled: false
