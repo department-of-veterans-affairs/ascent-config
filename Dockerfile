@@ -1,4 +1,17 @@
-FROM java:8
+FROM jluck/ascent-base
 
-ADD target/ascent-config-*.jar /ascent-config.jar
-ENTRYPOINT ["java", "-Xms32m", "-Xmx256m", "-jar", "/ascent-config.jar"]
+ENV JAR_FILE "/ascent-config.jar"
+ADD target/ascent-config-*.jar $JAR_FILE
+
+# Append app specific secrets to load to the base config
+RUN echo \
+'secret { \
+    format = "messagebroker.{{ key }}" \
+    no_prefix = true \
+    path = "secret/ascent-config-server/messagebroker" \
+} \
+secret { \
+    format = "git.{{ key }}" \
+    no_prefix = true \
+    path = "secret/ascent-config-server/git" \
+}' >> $ENVCONSUL_CONFIG
