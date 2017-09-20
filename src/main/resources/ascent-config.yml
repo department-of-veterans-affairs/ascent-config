@@ -13,9 +13,9 @@ spring:
     config:
       server:
         git:
-          uri: git@github.com:department-of-veterans-affairs/ascent-ext-configs.git
-          passphrase: ${git.passphrase}
-          strictHostKeyChecking: false
+          uri: https://github.com/department-of-veterans-affairs/ascent-ext-configs.git
+          username: ${git.access_token}
+          password: 
           cloneOnStart: true
           timeout: 10
           searchPaths: ascent*
