@@ -1,7 +1,7 @@
 FROM ascent/ascent-base
 
 ENV JAR_FILE "/ascent-config.jar"
-ADD target/ascent-config-*.jar $JAR_FILE
+ADD target/ascent-config.jar $JAR_FILE
 
 # Append app specific secrets to load to the base config
 RUN echo \
