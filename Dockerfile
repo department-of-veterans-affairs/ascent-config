@@ -1,4 +1,4 @@
-FROM jluck/ascent-base
+FROM ascent/ascent-base
 
 ENV JAR_FILE "/ascent-config.jar"
 ADD target/ascent-config-*.jar $JAR_FILE
