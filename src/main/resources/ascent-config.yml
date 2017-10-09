@@ -29,11 +29,12 @@ security:
   basic:
     enabled: true
   user:
-    name: ${config.username:config}
-    password: ${config.password:default}
-management:
-  security:
-    enabled: false
+    name: ${ascent.security.username:admin}
+    password: ${ascent.security.password:default}
+endpoints:
+  health:
+    sensitive: false
+management.health.rabbit.enabled: false
 ---
 spring:
   profiles: docker-demo
