@@ -1,4 +1,6 @@
-server:  
+management:
+  context-path: /actuator
+server:
   port: ${config.server.port:8760}
 info:  
   build:

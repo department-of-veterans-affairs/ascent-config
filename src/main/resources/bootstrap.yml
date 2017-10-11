@@ -24,7 +24,16 @@ eureka:
   instance:
     leaseRenewalIntervalInSeconds: 5
     leaseExpirationDurationInSeconds: 10
-
+    statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
+    healthCheckUrlPath: ${management.context-path}${endpoints.health.path:/health}
+    metadata-map:
+      version:  "@project.version@"
+      artifact: "@project.artifactId@"
+      name: "@project.name@"
+      description: "@project.description@"
+      management.context-path: ${management.context-path}
+      user.name: ${ascent.security.username:admin}
+      user.password: ${ascent.security.password:default}
 ---
 
 spring:
@@ -40,6 +49,16 @@ eureka:
     leaseExpirationDurationInSeconds: 20
     hostname: "${INSTANCE_HOST_NAME:@project.artifactId@}"
     preferIpAddress: false
+    statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
+    healthCheckUrlPath: ${management.context-path}${endpoints.health.path:/health}
+    metadata-map:
+      version:  "@project.version@"
+      artifact: "@project.artifactId@"
+      name: "@project.name@"
+      description: "@project.description@"
+      management.context-path: ${management.context-path}
+      user.name: ${ascent.security.username:admin}
+      user.password: ${ascent.security.password:default}
 ---
 
 spring:
@@ -54,3 +73,13 @@ eureka:
   instance:
     hostname: "${INSTANCE_HOST_NAME:@project.artifactId@}"
     preferIpAddress: false
+    statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
+    healthCheckUrlPath: ${management.context-path}${endpoints.health.path:/health}
+    metadata-map:
+      version:  "@project.version@"
+      artifact: "@project.artifactId@"
+      name: "@project.name@"
+      description: "@project.description@"
+      management.context-path: ${management.context-path}
+      user.name: ${ascent.security.username:admin}
+      user.password: ${ascent.security.password:default}
