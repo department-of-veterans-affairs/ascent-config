@@ -71,6 +71,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Ascent Test Framework -->
+		<dependency>
+			<groupId>gov.va.ascent</groupId>
+			<artifactId>ascent-test-framework</artifactId>
+			<version>${ascent.test.framework.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
