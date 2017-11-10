@@ -13,6 +13,4 @@
         </springProfile>
     </root>
 
-    <logger name="org.apache.http" level="debug"/>
-
 </configuration>
