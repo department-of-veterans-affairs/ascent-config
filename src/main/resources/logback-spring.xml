@@ -12,6 +12,7 @@
             <appender-ref ref="ASCENT_ASYNC_CONSOLE_APPENDER" />
         </springProfile>
     </root>
-    
+
+    <logger name="ogging.level.org.apache.http" level="debug"/>
 
 </configuration>
