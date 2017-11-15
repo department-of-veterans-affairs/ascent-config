@@ -39,7 +39,7 @@ endpoints:
 management.health.rabbit.enabled: false
 ---
 spring:
-  profiles: docker-demo
+  profiles: docker-demo, aws-ci, aws-stage, aws-prod
   cloud:
     bus:
       enabled: true
