@@ -23,13 +23,14 @@ spring:
           order: 1
           uri: https://github.com/department-of-veterans-affairs/ascent-ext-configs.git
           username: ${git.access_token}
-          password: 
-          cloneOnStart: true
+          password:
+          force-pull: true
           timeout: 10
           searchPaths: ascent*
+          basedir: ${BASE_DIR:../configrepo}
 security:
   basic:
-    enabled: true
+    enabled: false
   user:
     name: ${ascent.security.username:admin}
     password: ${ascent.security.password:default}
@@ -37,6 +38,8 @@ endpoints:
   health:
     sensitive: false
 management.health.rabbit.enabled: false
+health.config.enabled: false
+spring.cloud.config.server.health.enabled: false
 ---
 spring:
   profiles: docker-demo, aws-ci, aws-stage, aws-prod
