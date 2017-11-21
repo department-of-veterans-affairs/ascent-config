@@ -9,8 +9,4 @@ public interface GitRepoUpdater {
 
     void updateRepo() throws IOException, GitAPIException;
 
-    void updateRepoViaGithub() throws IOException;
-
-    void compareCommits() throws IOException, GitAPIException;
-
 }

@@ -1,22 +1,19 @@
 package gov.va.ascent.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,20 +27,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
-import javax.xml.ws.Response;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,6 +46,8 @@ import java.util.UUID;
 @Component
 public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublisherAware, ApplicationContextAware {
 
+    private static final String REFS_HEADS_MASTER = "/refs/heads/master";
+    private static final String REFS_HEADS_DEVELOPMENT = "/refs/heads/development";
     private ApplicationEventPublisher applicationEventPublisher;
 
     private String contextId = UUID.randomUUID().toString();
@@ -63,8 +55,11 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
     @Value("${BASE_DIR:../configrepo}")
     private String gitRepoPath;
 
-    @Value("${git.access_token}")
-    private String gitAccessToken;
+    @Value("${ascent.cloud.config.label:''}")
+    private String ascentCloundConfigRepoBranch;
+
+    @Autowired
+    private Environment environment;
 
     private String[] branches = {"master", "development", "spring-cloud-bus-poc"};
 
@@ -90,37 +85,7 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
     JGitEnvironmentRepository environmentRepository;
 
     @Override
-    public void compareCommits() throws IOException, GitAPIException{
-
-        CredentialsProvider credProvider = environmentRepository.getGitCredentialsProvider();
-
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        try (Repository repository = builder.setGitDir(new File(gitRepoPath + "/.git"))
-                .setMustExist(true)
-                .readEnvironment() // scan environment GIT_* variables
-                .build()) {
-            Git git = new Git(repository);
-
-            ObjectReader reader = git.getRepository().newObjectReader();
-            CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-            ObjectId oldTree = git.getRepository().resolve( "b6f87d9^{tree}" );
-            oldTreeIter.reset( reader, oldTree );
-            CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-            ObjectId newTree = git.getRepository().resolve( "19c7767^{tree}" );
-            newTreeIter.reset( reader, newTree );
-
-            DiffFormatter diffFormatter = new DiffFormatter( DisabledOutputStream.INSTANCE );
-            diffFormatter.setRepository( git.getRepository() );
-            List<DiffEntry> entries = diffFormatter.scan( oldTreeIter, newTreeIter );
-
-            for( DiffEntry entry : entries ) {
-                LOGGER.info( entry.toString() );
-            }
-        }
-    }
-
-    @Override
-//    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void updateRepo() throws IOException, GitAPIException{
 
         CredentialsProvider credProvider = environmentRepository.getGitCredentialsProvider();
@@ -146,37 +111,6 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
             notifyAppsOfExternalConfigChanges(paths);
         }
 
-    }
-
-    @Override
-//    @Scheduled(cron = "0 0/5 * * * *")
-    public void updateRepoViaGithub() throws IOException {
-        LOGGER.info("Update Repo Called");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", "token " + gitAccessToken);
-        HttpEntity<String> request = new HttpEntity<>(httpHeaders);
-        RestTemplate restTemplate = new RestTemplate();
-        ArrayList<String> commits = new ArrayList<>();
-        Set<String> paths = new LinkedHashSet<>();
-
-        for (String branch : branches) {
-            ResponseEntity<String> result = restTemplate.exchange("https://api.github.com/repos/department-of-veterans-affairs/ascent-ext-configs/commits?sha=spring-cloud-bus-poc&since=2017-11-20T20:45:00Z", HttpMethod.GET, request, String.class);
-            ArrayNode nodes = objectMapper.readValue(result.getBody(), ArrayNode.class);
-            for (JsonNode node : nodes) {
-                commits.add(node.get("sha").asText());
-            }
-
-        }
-
-        for (String sha : commits) {
-            ResponseEntity<String> result = restTemplate.exchange("https://api.github.com/repos/department-of-veterans-affairs/ascent-ext-configs/commits?sha=" + sha, HttpMethod.GET, request, String.class);
-            ArrayNode nodes = objectMapper.readValue(result.getBody(), ArrayNode.class);
-            for (JsonNode node : nodes) {
-
-            }
-        }
-
-        LOGGER.info(Arrays.toString(commits.toArray()));
     }
 
     private Set<String> guessServiceName(String path) {
@@ -214,7 +148,7 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
         final List<Ref> branches = Collections.unmodifiableList(git.branchList().call());
         for(Ref branch: branches){
             git.checkout().setName(branch.getName()).call();
-            git.pull().setCredentialsProvider(credProvider).call();
+            git.pull().setCredentialsProvider(credProvider).setStrategy(MergeStrategy.THEIRS).call();
             Iterable<RevCommit> commits = git.log().add(repository.resolve(Constants.HEAD)).setMaxCount(1).call();
             LOGGER.info("Branch Name: " + branch.getName());
             for(RevCommit newestCommit: commits){
@@ -240,80 +174,49 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
     private Set<String> checkForUpdates(Repository repository, Git git) throws IOException, GitAPIException{
         final Set<String> paths = new HashSet<>();
 
-        RevWalk revWalk = new RevWalk(repository);
-
         final List<Ref> branches = Collections.unmodifiableList(git.branchList().call());
 
-        for(Ref branch : branches){
-            LOGGER.info("Branch ID: " + branch.getName());
-            Iterable<RevCommit> commits = git.log().addRange(mostRecentCommitByBranchName.get(branch.getName()),
+        if(ascentCloundConfigRepoBranch.equals("master")){
+            git.checkout().setName(REFS_HEADS_MASTER).call();
+            Iterable<RevCommit> commits = git.log().addRange(mostRecentCommitByBranchName.get(REFS_HEADS_MASTER),
                     repository.resolve(Constants.HEAD)).call();
-            for(RevCommit commit : commits){
-                LOGGER.info("Commit ID: " + commit.toObjectId());
-                if(mostRecentCommitByBranchName.get(branch.getName()) != null &&
-                        !mostRecentCommitByBranchName.get(branch.getName()).toObjectId().equals(commit.toObjectId())){
-                    try (ObjectReader reader = repository.newObjectReader()) {
-                        CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-                        ObjectId oldTree = git.getRepository().resolve( mostRecentCommitByBranchName.get(branch.getName()).toObjectId().toString().substring(0,6)+"^{tree}" );
-                        oldTreeIter.reset(reader, oldTree);
-                        CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-                        ObjectId newTree = git.getRepository().resolve( commit.toObjectId().toString().substring(0,6)+"^{tree}" );
-                        newTreeIter.reset(reader, newTree);
-
-                        DiffFormatter diffFormatter = new DiffFormatter( DisabledOutputStream.INSTANCE );
-                        diffFormatter.setRepository( git.getRepository() );
-                        List<DiffEntry> entries = diffFormatter.scan( oldTreeIter, newTreeIter );
-
-                        for( DiffEntry entry : entries ) {
-                            LOGGER.info( entry.toString() );
-                            paths.add(entry.getNewPath());
-                        }
-                        mostRecentCommitByBranchName.put(branch.getName(), commit);
-//                        List<DiffEntry> diffs = git.diff()
-//                                .setNewTree(newTreeIter)
-//                                .setOldTree(oldTreeIter)
-//                                .call();
-//                        for (DiffEntry entry : diffs) {
-//                            paths.add(entry.getNewPath());
-//                            LOGGER.info("NEW PATH: " + entry.getNewPath());
-//                            LOGGER.info("Entry : " + entry);
-//                        }
-                    }
-                }
+            processUpdatedCommits(commits, REFS_HEADS_MASTER, repository, paths);
+        } else if(ascentCloundConfigRepoBranch.equals("development")){
+            git.checkout().setName(REFS_HEADS_DEVELOPMENT).call();
+            Iterable<RevCommit> commits = git.log().addRange(mostRecentCommitByBranchName.get(REFS_HEADS_DEVELOPMENT),
+                    repository.resolve(Constants.HEAD)).call();
+            processUpdatedCommits(commits, REFS_HEADS_DEVELOPMENT, repository, paths);
+        } else {
+            for (Ref branch : branches) {
+                LOGGER.info("Branch ID: " + branch.getName());
+                git.checkout().setName(branch.getName()).call();
+                Iterable<RevCommit> commits = git.log().addRange(mostRecentCommitByBranchName.get(branch.getName()),
+                        repository.resolve(Constants.HEAD)).call();
+                processUpdatedCommits(commits, branch.getName(), repository, paths);
             }
-//            RevCommit commit = revWalk.parseCommit(branch.getObjectId());
-//            LOGGER.error("Start-commit:" + commit);
-//            revWalk.markStart(commit);
-//            RevCommit updatedCommit = commit;
-//            for(RevCommit rev : revWalk){
-//                updatedCommit = rev;
-//                LOGGER.error("Commit: " + rev);
-//                if(mostRecentCommitByBranchName.get(branch.getName()) != null &&
-//                        mostRecentCommitByBranchName.get(branch.getName()).toObjectId().equals(rev.toObjectId())){
-//                    break;
-//                } else {
-//                    try (ObjectReader reader = repository.newObjectReader()) {
-//                        CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-//                        oldTreeIter.reset(reader, mostRecentCommitByBranchName.get(branch.getName()).getTree());
-//                        CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-//                        newTreeIter.reset(reader, rev.getTree());
-//
-//                        List<DiffEntry> diffs = git.diff()
-//                                .setNewTree(newTreeIter)
-//                                .setOldTree(oldTreeIter)
-//                                .call();
-//                        for (DiffEntry entry : diffs) {
-//                            paths.add(entry.getNewPath());
-//                            LOGGER.info("NEW PATH: " + entry.getNewPath());
-//                            LOGGER.info("Entry : " + entry);
-//                        }
-//                    }
-//                }
-//            }
-//            mostRecentCommitByBranchName.put(branch.getName(), updatedCommit);
         }
-        revWalk.close();
         return paths;
+    }
+
+    private void processUpdatedCommits(Iterable<RevCommit> commits, String branch, Repository repository, Set<String> paths)
+            throws IOException{
+        DiffFormatter diffFmt = new DiffFormatter(DisabledOutputStream.INSTANCE);
+        diffFmt.setRepository(repository);
+        int count = 0;
+        for(RevCommit commit : commits){
+            if(count == 0){
+                mostRecentCommitByBranchName.put(branch, commit);
+            }
+            LOGGER.info("Commit ID: " + commit.toObjectId());
+            final RevTree a = commit.getParentCount() > 0 ? commit.getParent(0).getTree() : null;
+            final RevTree b = commit.getTree();
+
+            for(DiffEntry diff: diffFmt.scan(a, b)) {
+                LOGGER.info(diff.getNewPath() + " - " + commit.getId());
+                paths.add(diff.getNewPath());
+            }
+            count++;
+        }
     }
 
     private void notifyAppsOfExternalConfigChanges(Set<String> paths){
@@ -346,7 +249,7 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
         for(Ref branch : branches){
             // checkout each branch then reset checkout to master
             git.checkout().setName(branch.getName()).call();
-            git.pull().setCredentialsProvider(credProvider).call();
+            git.pull().setCredentialsProvider(credProvider).setStrategy(MergeStrategy.THEIRS).call();
 
         }
         git.checkout().setName("refs/heads/master").call();

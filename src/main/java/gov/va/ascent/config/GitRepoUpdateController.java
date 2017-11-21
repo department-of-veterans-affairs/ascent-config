@@ -31,19 +31,4 @@ public class GitRepoUpdateController {
         }
     }
 
-    @RequestMapping("/update-via-github")
-    public void updateRepoGithub(){
-        try {
-            gitRepoUpdater.updateRepoViaGithub();
-        } catch(IOException e){
-            LOGGER.error("Error occurred: ", e);
-        }
-    }
-
-    @RequestMapping("/compare")
-    public void compareCommits() throws IOException, GitAPIException{
-        gitRepoUpdater.compareCommits();
-
-    }
-
 }
