@@ -1,12 +1,11 @@
 package gov.va.ascent.config;
 
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-
 import java.io.IOException;
 
+@FunctionalInterface
 public interface GitRepoUpdater {
 
-    void updateRepo() throws IOException, GitAPIException;
+    void updateRepo() throws IOException;
 
 }
