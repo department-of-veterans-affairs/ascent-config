@@ -30,7 +30,7 @@ spring:
           basedir: ${BASE_DIR:../configrepo}
 security:
   basic:
-    enabled: false
+    enabled: true
   user:
     name: ${ascent.security.username:admin}
     password: ${ascent.security.password:default}

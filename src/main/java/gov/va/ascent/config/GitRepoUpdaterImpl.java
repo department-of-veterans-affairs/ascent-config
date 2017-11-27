@@ -55,7 +55,9 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
 
     /* Development branch. */
     private static final String REFS_HEADS_DEVELOPMENT = "refs/heads/development";
-    public static final String APPLICATION = "application";
+
+    /* Application constant. */
+    private static final String APPLICATION = "application";
 
     /* The application event publisher. */
     private ApplicationEventPublisher applicationEventPublisher;
@@ -109,7 +111,7 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
         final FileRepositoryBuilder builder = new FileRepositoryBuilder();
         try (Repository repository = builder.setGitDir(new File(gitRepoPath + "/.git"))
                 .setMustExist(true)
-                .readEnvironment() // scan environment GIT_* variables
+                .readEnvironment()
                 .build()) {
             final Git git = new Git(repository);
             final List<Ref> branches = Collections.unmodifiableList(git.branchList().call());
