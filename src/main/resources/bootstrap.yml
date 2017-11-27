@@ -7,6 +7,8 @@ eureka:
   client:
     enabled: false
   instance: 
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 30
     metadata-map: 
       version:  "@project.version@"
       artifact: "@project.artifactId@"
@@ -22,8 +24,6 @@ eureka:
     serviceUrl:
       defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@localhost:${discovery.server.port:8761}/eureka/
   instance:
-    leaseRenewalIntervalInSeconds: 5
-    leaseExpirationDurationInSeconds: 10
     statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
     healthCheckUrlPath: ${management.context-path}${endpoints.health.path:/health}
     metadata-map:
