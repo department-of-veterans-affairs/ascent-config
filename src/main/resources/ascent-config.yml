@@ -54,6 +54,8 @@ spring:
 ---
 spring:
   profiles: aws-prod, aws-stage
+# Setting ascent.cloud.config.label tells our Github monitoring code which branch to monitor
+# for updates for specific profiles. When property is set, it will ignore updates on other branches.
 ascent:
   cloud:
     config:
