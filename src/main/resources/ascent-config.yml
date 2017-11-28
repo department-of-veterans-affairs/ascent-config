@@ -26,7 +26,7 @@ spring:
           password:
           force-pull: true
           timeout: 10
-          searchPaths: ascent*
+          searchPaths: ascent*,vetsapi*
           basedir: ${BASE_DIR:../configrepo}
 security:
   basic:
@@ -54,6 +54,8 @@ spring:
 ---
 spring:
   profiles: aws-prod, aws-stage
+# Setting ascent.cloud.config.label tells our Github monitoring code which branch to monitor
+# for updates for specific profiles. When property is set, it will ignore updates on other branches.
 ascent:
   cloud:
     config:
