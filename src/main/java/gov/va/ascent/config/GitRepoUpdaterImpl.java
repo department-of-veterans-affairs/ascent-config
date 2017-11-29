@@ -240,6 +240,9 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
             }
             count++;
         }
+        if(diffFmt!=null) {
+        	diffFmt.close();
+        }
         return paths;
     }
 
