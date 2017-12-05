@@ -9,6 +9,6 @@ This is a repository for the ascent config service that **centralizes external c
 **Service Application Port**
 * Cloud Config - 8760
 
-See [Ascent-Config](https://github.com/department-of-veterans-affairs/ascent-platform/wiki/Ascent-Config) for additional details.
+See [Ascent-Config](https://github.com/department-of-veterans-affairs/ascent-platform/wiki/PLATFORM-:-Ascent-Config) for additional details.
 
-See [Ascent Quick Start Guide](https://github.com/department-of-veterans-affairs/ascent-platform/wiki/Ascent-Quick-Start-Guide) for the software prerequisites.
+See [Ascent Quick Start Guide](https://github.com/department-of-veterans-affairs/ascent-platform/wiki/DEV-:-Platform-Quick-Start-Guide) for the software prerequisites.
