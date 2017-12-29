@@ -6,9 +6,9 @@ ADD target/ascent-config.jar $JAR_FILE
 # Append app specific secrets to load to the base config
 RUN echo \
 'secret { \
-    format = "messagebroker.{{ key }}" \
+    format = "{{ key }}" \
     no_prefix = true \
-    path = "secret/ascent-config-server/messagebroker" \
+    path = "secret/application" \
 } \
 secret { \
     format = "git.{{ key }}" \

@@ -49,8 +49,8 @@ spring:
   rabbitmq:
     host: ${messagebroker.host:ascent-amqp}
     port: ${messagebroker.port:5672}
-    username: ${messagebroker.username:guest}
-    password: ${messagebroker.password:guest}
+    username: ${spring.rabbitmq.username:guest}
+    password: ${spring.rabbitmq.password:guest}
 ---
 spring:
   profiles: aws-prod, aws-stage
