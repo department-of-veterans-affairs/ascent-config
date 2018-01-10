@@ -1,4 +1,4 @@
-Feature: Assert demo service property
+Feature: Navigate to application YML and assert the property of application yml
 @verifyapplicationyml
   Scenario Outline: Navigate to application YML and assert the property of application yml
   

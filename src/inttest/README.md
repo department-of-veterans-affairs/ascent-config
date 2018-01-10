@@ -1,21 +1,19 @@
 # README #
 
-This document provides the details of **Ascent Dashboard Acceptance test** .
+This document provides the details of **Ascent Config Acceptance test** .
 
-## Acceptance test for Ascent Dashboard ##
-Acceptance test are created to make sure the core services in ascent dashboard are working as expected.
+## Acceptance test for Ascent Config ##
+Acceptance test are created to make sure the core services in ascent config are working as expected.
 
-Project uses Java - Maven platform, the REST-Assured jars for core API validations. It also uses selenium webdriver for UI validation.
+Project uses Java - Maven platform, the REST-Assured jars for core API validations.
 
 ## Project Structure ##
 
-src/inttest/gov/va/ascent/features - This is where you will create the cucumber feature files that contain the Feature and Scenarios for the dashboard service you are testing.
+src/inttest/gov/va/ascent/features - This is where you will create the cucumber feature files that contain the Feature and Scenarios for the config service you are testing.
 
-src/inttest/java/gov/va/ascent/dashboard/steps- The implementation steps related to the feature and scenarios mentioned in the cucumber file for the API needs to be created in this location.
+src/inttest/java/gov/va/ascent/config/steps- The implementation steps related to the feature and scenarios mentioned in the cucumber file for the API needs to be created in this location.
 
-src/inttest/java/gov/va/ascent/dashboard/pages-  The object repository for each page is specified here. For each components or page there should be a corresponding page class. This Page class will find the Web Elements of that web page and contains Page methods which perform operations on those Web Elements.
-
-src/inttest/java/gov/va/ascent/dashboard/runner - Cucumber runner class that contains all feature file entries that needs to be executed at runtime. The annotations provided in the cucumber runner class will assist in bridging the features to step definitions.
+src/inttest/java/gov/va/ascent/config/runner -Cucumber runner class that contains all feature file entries that needs to be executed at runtime. The annotations provided in the cucumber runner class will assist in bridging the features to step definitions.
 
 src/inttest/resources/logback-test.xml - Logback Console Appender pattern and loggers defined for this project
 
@@ -24,7 +22,7 @@ src/inttest/resources/config/vetsapi-ci.properties – CI configuration properti
 src/inttest/resources/config/vetsapi-stage.properties – STAGE configuration properties such as URL are specified here.
 
 ## Execution ##
-**Command Line:** Use this command(s) to execute the dashboard acceptance test. 
+**Command Line:** Use this command(s) to execute the config acceptance test. 
 
 Default Local: mvn verify –Pinttest
 
@@ -40,12 +38,12 @@ mvn clean verify -Pinttest -Dbrowser=CHROME -DwebdriverPath=”Path of the chrom
 
 Use below sample commands to execute for different environment:
 
-CI: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=ci -DX-Vault-Token=<> -DbaseURL=https://ci.internal.vets-api.gov:8761
+CI: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=ci -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://ci.internal.vets-api.gov:8760
 
-CI: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<>  -DbaseURL=https://ci.internal.vets-api.gov:8761 -Dvault.url=https://vault.internal.vets-api.gov:8200/v1/secret/ascent-discovery
+CI: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://ci.internal.vets-api.gov:8761 -Dvault.url=https://vault.internal.vets-api.gov:8200/v1/secret/application
 
-STAGE : mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=ci -DX-Vault-Token=<>  -DbaseURL=https://stage.internal.vets-api.gov:8761
+STAGE : mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=ci -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://stage.internal.vets-api.gov:8761
 
-STAGE: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<>  -DbaseURL=https://stage.internal.vets-api.gov:8761 -Dvault.url=https://vault.internal.vets-api.gov:8200/v1/secret/ascent-discovery
+STAGE: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://stage.internal.vets-api.gov:8761 -Dvault.url=https://vault.internal.vets-api.gov:8200/v1/secret/application
 
 The parameter X-Vault-Token is not valid for local environment. It is passed thru pipeline. 

@@ -1,5 +1,7 @@
 package gov.va.ascent.config.steps;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,13 +16,13 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import gov.va.ascent.config.util.AppUtil;
 import gov.va.ascent.test.framework.restassured.BaseStepDef;
-
+import gov.va.ascent.test.framework.service.YamlReader;
 
 public class VerifyApplicationYml extends BaseStepDef {
 
 	final Logger log = LoggerFactory.getLogger(VerifyApplicationYml.class);
 
-	@Before({"@verifyapplicationyml"})
+	@Before({ "@verifyapplicationyml" })
 	public void setUpREST() {
 		initREST();
 	}
@@ -31,27 +33,24 @@ public class VerifyApplicationYml extends BaseStepDef {
 	}
 
 	@When("^user makes a request to \"([^\"]*)\"$")
-	public void makerequesustoappsurlGet(String strURL) throws Throwable { // /ascent-demo-service/aws-ci/development/application.yml
-		// add header information
+	public void makerequesustoappsurlGet(String strURL) throws Throwable {
 		String configToken = System.getProperty("X-Config-Token");
 		headerMap.put("X-Config-Token", configToken);
 		invokeAPIUsingGet(AppUtil.getBaseURL() + strURL, false);
 	}
+
 	@Then("^the response code must be for application yml (\\d+)$")
 	public void serviceresposestatuscodemustbe(int intStatusCode) throws Throwable {
 		validateStatusCode(intStatusCode);
 	}
 
-	@And("^And assert the \"([^\"]*)\" and value should be \"([^\"]*)\"$")
+	@And("^assert the \"([^\"]*)\" and value should be \"([^\"]*)\"$")
 	public void checkProperty(String propertyName, String propertyValue) throws Throwable {
-		// propertyName "ascent.acceptance.testing.property"
 		String value = YamlReader.getProperty(strResponse, propertyName);
-		assertTrue(value, propertyValue)
+		assertEquals(value, propertyValue);
 	}
 
-	
-	
-	@After({"@verifyapplicationyml"})
+	@After({ "@verifyapplicationyml" })
 	public void cleanUp(Scenario scenario) {
 		postProcess(scenario);
 	}

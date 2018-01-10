@@ -14,12 +14,11 @@ import cucumber.api.java.en.When;
 import gov.va.ascent.config.util.AppUtil;
 import gov.va.ascent.test.framework.restassured.BaseStepDef;
 
-
 public class ConfigStatus extends BaseStepDef {
 
 	final Logger log = LoggerFactory.getLogger(ConfigStatus.class);
 
-	@Before({"@configstatus"})
+	@Before({ "@configstatus" })
 	public void setUpREST() {
 		initREST();
 	}
@@ -33,13 +32,13 @@ public class ConfigStatus extends BaseStepDef {
 	public void makerequesustoappsurlGet(String strURL) throws Throwable {
 		invokeAPIUsingGet(AppUtil.getBaseURL() + strURL, false);
 	}
+
 	@Then("^the response code must be for config service (\\d+)$")
 	public void serviceresposestatuscodemustbe(int intStatusCode) throws Throwable {
 		validateStatusCode(intStatusCode);
 	}
 
-
-	@After({"@configstatus"})
+	@After({ "@configstatus" })
 	public void cleanUp(Scenario scenario) {
 		postProcess(scenario);
 	}
