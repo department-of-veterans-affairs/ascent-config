@@ -2,10 +2,10 @@ package gov.va.ascent.config.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.va.ascent.config.util.AppUtil;
 import gov.va.ascent.test.framework.service.RESTConfigService;
 import gov.va.ascent.test.framework.service.VaultService;
 import gov.va.ascent.test.framework.util.AppConstants;
@@ -19,28 +19,27 @@ public class AppUtil {
 
 	}
 
-	public static String getBaseURL() {
-		RESTConfigService restConfig = RESTConfigService.getInstance();
-		String baseURL = restConfig.getPropertyName("baseURL", true);
-
+	public static String getBaseURL()  {
+		RESTConfigService restConfig =  RESTConfigService.getInstance();
+		String baseURL =  restConfig.getPropertyName("baseURL", true);
+		
 		String vaultToken = System.getProperty(AppConstants.VAULT_TOKEN_PARAM_NAME);
-		if (vaultToken != null && vaultToken != "") {
+		if(vaultToken != null && vaultToken != "") {
 			String jsonResponse = VaultService.getVaultCredentials(vaultToken);
-
+			
 			RESTUtil restUtil = new RESTUtil();
 			String userName = restUtil.parseJSON(jsonResponse, "data.'ascent.security.username'");
-			String password = restUtil.parseJSON(jsonResponse, "data.'ascent.security.password'");
-
+			String password = restUtil.parseJSON(jsonResponse, "data.'ascent.security.password'"); 
+			
 			final Matcher m = urlPattern.matcher(baseURL);
-			if (!m.matches())
-				throw new RuntimeException("Invalid base url!");
+			if(!m.matches()) 
+				throw new RuntimeException("Invalid base url!");	
 			final String protocol = m.group(1).toLowerCase();
-			final String host = m.group(2);
-			final String port = m.group(3);
+			final String host     = m.group(2);
+			final String port     = m.group(3);
 			String finalUrl = protocol + "://" + userName + ":" + password + "@" + host + port;
-			return finalUrl;
+		    return finalUrl;
 		}
 		return baseURL;
 	}
-
 }

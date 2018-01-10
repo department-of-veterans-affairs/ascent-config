@@ -22,7 +22,7 @@ public class VerifyApplicationYml extends BaseStepDef {
 
 	final Logger log = LoggerFactory.getLogger(VerifyApplicationYml.class);
 
-	@Before({ "@verifyapplicationyml" })
+	@Before({"@verifyapplicationyml"})
 	public void setUpREST() {
 		initREST();
 	}
@@ -33,12 +33,11 @@ public class VerifyApplicationYml extends BaseStepDef {
 	}
 
 	@When("^user makes a request to \"([^\"]*)\"$")
-	public void makerequesustoappsurlGet(String strURL) throws Throwable {
+	public void makerequesustoappsurlGet(String strURL) throws Throwable { 
 		String configToken = System.getProperty("X-Config-Token");
 		headerMap.put("X-Config-Token", configToken);
 		invokeAPIUsingGet(AppUtil.getBaseURL() + strURL, false);
 	}
-
 	@Then("^the response code must be for application yml (\\d+)$")
 	public void serviceresposestatuscodemustbe(int intStatusCode) throws Throwable {
 		validateStatusCode(intStatusCode);
@@ -49,8 +48,8 @@ public class VerifyApplicationYml extends BaseStepDef {
 		String value = YamlReader.getProperty(strResponse, propertyName);
 		assertEquals(value, propertyValue);
 	}
-
-	@After({ "@verifyapplicationyml" })
+	
+	@After({"@verifyapplicationyml"})
 	public void cleanUp(Scenario scenario) {
 		postProcess(scenario);
 	}

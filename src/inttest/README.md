@@ -22,6 +22,7 @@ src/inttest/resources/config/vetsapi-ci.properties – CI configuration properti
 src/inttest/resources/config/vetsapi-stage.properties – STAGE configuration properties such as URL are specified here.
 
 ## Execution ##
+
 **Command Line:** Use this command(s) to execute the config acceptance test. 
 
 Default Local: mvn verify –Pinttest
