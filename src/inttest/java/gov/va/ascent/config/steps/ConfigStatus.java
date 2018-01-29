@@ -11,7 +11,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import gov.va.ascent.config.util.AppUtil;
+import gov.va.ascent.config.util.ConfigAppUtil;
 import gov.va.ascent.test.framework.restassured.BaseStepDef;
 
 public class ConfigStatus extends BaseStepDef {
@@ -31,7 +31,7 @@ public class ConfigStatus extends BaseStepDef {
 
 	@When("^user makes a request to config \"([^\"]*)\"$")
 	public void makerequesustoappsurlGet(String strURL) throws Throwable {
-		invokeAPIUsingGet(AppUtil.getBaseURL() + strURL, false);
+		invokeAPIUsingGet(ConfigAppUtil.getBaseURL() + strURL, false);
 	}
 	@Then("^the response code must be for config service (\\d+)$")
 	public void serviceresposestatuscodemustbe(int intStatusCode) throws Throwable {

@@ -11,11 +11,11 @@ import gov.va.ascent.test.framework.service.VaultService;
 import gov.va.ascent.test.framework.util.AppConstants;
 import gov.va.ascent.test.framework.util.RESTUtil;
 
-public class AppUtil {
-	private static Logger log = LoggerFactory.getLogger(AppUtil.class);
+public class ConfigAppUtil {
+	private static Logger log = LoggerFactory.getLogger(ConfigAppUtil.class);
 	private static final Pattern urlPattern = Pattern.compile("(http|https)://([A-Za-z0-9\\-\\.]+)(:(\\d+))$");
 
-	private AppUtil() {
+	private ConfigAppUtil() {
 
 	}
 

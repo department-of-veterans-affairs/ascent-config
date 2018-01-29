@@ -14,7 +14,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import gov.va.ascent.config.util.AppUtil;
+import gov.va.ascent.config.util.ConfigAppUtil;
 import gov.va.ascent.test.framework.restassured.BaseStepDef;
 import gov.va.ascent.test.framework.service.YamlReader;
 
@@ -36,7 +36,7 @@ public class VerifyApplicationYml extends BaseStepDef {
 	public void makerequesustoappsurlGet(String strURL) throws Throwable { 
 		String configToken = System.getProperty("X-Config-Token");
 		headerMap.put("X-Config-Token", configToken);
-		invokeAPIUsingGet(AppUtil.getBaseURL() + strURL, false);
+		invokeAPIUsingGet(ConfigAppUtil.getBaseURL() + strURL, false);
 	}
 	@Then("^the response code must be for application yml (\\d+)$")
 	public void serviceresposestatuscodemustbe(int intStatusCode) throws Throwable {
