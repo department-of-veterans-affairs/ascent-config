@@ -17,6 +17,7 @@ import cucumber.api.java.en.When;
 import gov.va.ascent.config.util.ConfigAppUtil;
 import gov.va.ascent.test.framework.restassured.BaseStepDef;
 import gov.va.ascent.test.framework.service.YamlReader;
+import gov.va.ascent.test.framework.util.AppConstants;
 
 public class VerifyApplicationYml extends BaseStepDef {
 
@@ -34,8 +35,7 @@ public class VerifyApplicationYml extends BaseStepDef {
 
 	@When("^user makes a request to \"([^\"]*)\"$")
 	public void makerequesustoappsurlGet(String strURL) throws Throwable { 
-		String configToken = System.getProperty("X-Config-Token");
-		headerMap.put("X-Config-Token", configToken);
+		headerMap.put("X-Config-Token", System.getProperty(AppConstants.VAULT_TOKEN_PARAM_NAME));
 		invokeAPIUsingGet(ConfigAppUtil.getBaseURL() + strURL, false);
 	}
 	@Then("^the response code must be for application yml (\\d+)$")
