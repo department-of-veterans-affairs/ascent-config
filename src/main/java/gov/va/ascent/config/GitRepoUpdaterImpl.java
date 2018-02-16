@@ -1,5 +1,6 @@
 package gov.va.ascent.config;
 
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -106,31 +107,31 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
     @Scheduled(cron = "0 0/5 * * * *")
     public void updateRepo() throws IOException{
 
-        final CredentialsProvider credProvider = environmentRepository.getGitCredentialsProvider();
+    	final CredentialsProvider credProvider = environmentRepository.getGitCredentialsProvider();
 
-        final FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        try (Repository repository = builder.setGitDir(new File(gitRepoPath + "/.git"))
-                .setMustExist(true)
-                .readEnvironment()
-                .build()) {
-            final Git git = new Git(repository);
-            final List<Ref> branches = Collections.unmodifiableList(git.branchList().call());
-            LOGGER.debug("Got the repo opened: " + repository.getFullBranch());
+    	final FileRepositoryBuilder builder = new FileRepositoryBuilder();
+    	try {
+    		Repository repository = builder.setGitDir(new File(gitRepoPath + "/.git"))
+    				.setMustExist(true)
+    				.readEnvironment()
+    				.build();
+    		final Git git = new Git(repository);
+    		final List<Ref> branches = Collections.unmodifiableList(git.branchList().call());
+    		LOGGER.debug("Got the repo opened: " + repository.getFullBranch());
 
-            if(mostRecentCommitByBranchName.isEmpty()){
-                firstCheckForUpdates(git, credProvider, repository);
-            } else if(mostRecentCommitByBranchName.size() < branches.size()){
-                checkForNewLocalBranchCheckouts(git, repository);
-            }
-            gitPullLocalBranches(git, credProvider, branches);
+    		if(mostRecentCommitByBranchName.isEmpty()){
+    			firstCheckForUpdates(git, credProvider, repository);
+    		} else if(mostRecentCommitByBranchName.size() < branches.size()){
+    			checkForNewLocalBranchCheckouts(git, repository);
+    		}
+    		gitPullLocalBranches(git, credProvider, branches);
 
-            final Set<String> paths = checkForUpdates(repository, git);
+    		final Set<String> paths = checkForUpdates(repository, git);
 
-            notifyAppsOfExternalConfigChanges(paths);
-        } catch (GitAPIException e){
-            LOGGER.error("Git Exception occurred: ", e);
-        }
-
+    		notifyAppsOfExternalConfigChanges(paths);
+    	} catch (GitAPIException e){
+    		LOGGER.error("Git Exception occurred: ", e);
+    	}
     }
 
     private Set<String> guessServiceName(String path) {
@@ -241,7 +242,7 @@ public class GitRepoUpdaterImpl implements GitRepoUpdater,ApplicationEventPublis
             count++;
         }
         if(diffFmt!=null) {
-        	diffFmt.close();
+        	diffFmt.release();
         }
         return paths;
     }
