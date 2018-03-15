@@ -3,7 +3,7 @@ services:
   ascent-config: 
     image: ascent/ascent-config
     build:
-      context: ../
+      context: ../../ascent-config
     ports:
      - "8760:8760"
     environment:
