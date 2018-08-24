@@ -42,7 +42,7 @@ health.config.enabled: false
 spring.cloud.config.server.health.enabled: false
 ---
 spring:
-  profiles: docker-demo, aws-ci, aws-stage, aws-prod
+  profiles: local-int, docker-demo, aws-ci, aws-stage, aws-prod
   cloud:
     bus:
       enabled: true
@@ -63,7 +63,17 @@ server:
     # trust-store-password:
     ######################################################################################################
     client-auth: need
-    
+---
+spring:
+    profiles: local-int
+
+server:
+  ssl:
+    key-alias: app
+    key-store: src/test/resources/ssl/keystore.jks
+    key-store-password:  changeit
+    trust-store: src/test/resources/ssl/truststore.jks
+    trust-store-password: changeit    
 ---
 spring:
   profiles: aws-prod, aws-stage
