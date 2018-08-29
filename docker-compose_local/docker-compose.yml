@@ -13,7 +13,6 @@ services:
       - VAULT_HOST=vault
       - VAULT_SCHEME=http
       - BASE_DIR=/configrepo/repo
-# To see Kitematic in docker-demo, comment out the logging section
     logging:
       driver: fluentd
       options:

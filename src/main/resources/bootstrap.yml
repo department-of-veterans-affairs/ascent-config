@@ -15,69 +15,34 @@ eureka:
       name: "@project.name@"
       description: "@project.description@"
 ---
-spring:
-  profiles: local-int, docker-demo, aws-ci, aws-stage, aws-prod
-  cloud:
-    vault:
-      fail-fast: true
-server:
-  ssl:
-    enabled: true
-    ######### These properties are set by the run-wrapper.sh script in the ascent-base container #########
-    # key-alias: @project.name@
-    # key-store: /app/certs/server.jks
-    # key-store-password: 
-    # trust-store: /app/certs/server-truststore.jks
-    # trust-store-password:
-    ######################################################################################################
-    client-auth: need
----
+
 spring:
   profiles: local-int
-
-server:
-  ssl:
-    key-alias: app
-    key-store: src/test/resources/ssl/keystore.jks
-    key-store-password:  changeit
-    trust-store: src/test/resources/ssl/truststore.jks
-    trust-store-password: changeit
 eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@localhost:${discovery.server.port:8761}/eureka/
   instance:
-#    hostname: "${INSTANCE_HOST_NAME:@project.artifactId@}"
-    hostname: localhost
-    nonSecurePortEnabled: false
-    securePortEnabled: true
-    securePort: ${server.port}
+    hostname: "${INSTANCE_HOST_NAME:localhost}"
     statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
     healthCheckUrlPath: ${management.context-path}${endpoints.health.path:/health}
     metadata-map:
       management.context-path: ${management.context-path}
       user.name: ${ascent.security.username:admin}
       user.password: ${ascent.security.password:default}
-  client:
-    enabled: true
-    securePortEnabled: true
-    serviceUrl:
-#      defaultZone: https://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer1.name:ascent-discovery}:${discovery.server.peer1.port:8761}/eureka/,http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer2.name:ascent-discovery-peer}:${discovery.server.peer2.port:8761}/eureka/
-      defaultZone: https://${discovery.username:eureka}:${discovery.password:default}@localhost:${discovery.server.port:8761}/eureka/
 ---
 
 spring:
   profiles: docker-demo, aws-ci, aws-stage, aws-prod
 spring.profiles.include: vault,git
-
 eureka:
   client:
     enabled: true
-    securePortEnabled: true
     serviceUrl:
-      defaultZone: https://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer1.name:ascent-discovery}:${discovery.server.peer1.port:8761}/eureka/,http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer2.name:ascent-discovery-peer}:${discovery.server.peer2.port:8761}/eureka/
+      defaultZone: http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer1.name:ascent-discovery}:${discovery.server.peer1.port:8761}/eureka/,http://${discovery.username:eureka}:${discovery.password:default}@${discovery.server.peer2.name:ascent-discovery-peer}:${discovery.server.peer2.port:8761}/eureka/
     preferSameZoneEureka: true
   instance:
-    nonSecurePortEnabled: false
-    securePortEnabled: true
-    securePort: ${server.port}
     hostname: "${INSTANCE_HOST_NAME:@project.artifactId@}"
     preferIpAddress: false
     statusPageUrlPath: ${management.context-path}${endpoints.info.path:/info}
