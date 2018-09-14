@@ -10,5 +10,5 @@ Feature: Navigate to application YML and assert the property of application yml
     
   Examples: 
       | ServiceURL          | propertyname | value| 
-      |/application/aws-ci/development/application.yml|ascent.acceptance.testing.property | sampleProperty |
+      |/application/aws-dev/development/application.yml|ascent.acceptance.testing.property | sampleProperty |
      
