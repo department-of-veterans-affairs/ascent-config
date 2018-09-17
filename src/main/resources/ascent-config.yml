@@ -42,7 +42,7 @@ health.config.enabled: false
 spring.cloud.config.server.health.enabled: false
 ---
 spring:
-  profiles: docker-demo, aws-ci, aws-stage, aws-prod
+  profiles: docker-demo, aws-ci, aws-dev, aws-stage, aws-prod
   cloud:
     bus:
       enabled: true
@@ -74,7 +74,7 @@ ascent:
       label: master
 ---
 spring:
-  profiles: aws-ci
+  profiles: docker-demo, aws-ci, aws-dev
 ascent:
   cloud:
     config:
