@@ -23,6 +23,7 @@ microservicePipeline {
     /*********  Deployment Configuration ***********/
     stackName = "config"
     serviceName = "ascent-config"
+    isPlatform = true
 
     //Default Deployment Configuration Values
     //composeFiles = ["docker-compose.yml"]
