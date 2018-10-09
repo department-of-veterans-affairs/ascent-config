@@ -31,6 +31,12 @@ spring:
 security:
   basic:
     enabled: true
+    #### testing to see if the property names are incorrect.
+    #### spring docs specify security:basic:user:** ,
+    #### not the configured  security:user:** properties 
+    user:
+      name: ${ascent.security.username:admin}
+      password: ${ascent.security.password:default}
   user:
     name: ${ascent.security.username:admin}
     password: ${ascent.security.password:default}
