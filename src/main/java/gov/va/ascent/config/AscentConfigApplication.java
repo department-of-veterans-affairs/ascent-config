@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.metrics.export.prometheus.EnablePrometheusMetrics;
 
 /**
  * An <tt>Ascent Configuration Server</tt> enabled for Spring Boot Application and 
@@ -13,6 +14,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 @SpringBootApplication
 @EnableConfigServer
 @EnableDiscoveryClient
+@EnablePrometheusMetrics
 public class AscentConfigApplication {
 
 	public static void main(String[] args) {
