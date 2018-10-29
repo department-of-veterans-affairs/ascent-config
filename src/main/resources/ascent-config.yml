@@ -2,7 +2,7 @@ management:
   context-path: /actuator
 server:
   port: ${config.server.port:8760}
-info:  
+info:
   build:
     version:  "@project.version@"
     artifact: "@project.artifactId@"
@@ -18,7 +18,7 @@ spring:
           order: 0
           host: ${VAULT_HOST:vault}
           port: ${VAULT_PORT:8200}
-          scheme: ${VAULT_SCHEME:http}          
+          scheme: ${VAULT_SCHEME:http}
         git:
           order: 1
           uri: https://github.com/department-of-veterans-affairs/ascent-ext-configs.git
@@ -32,8 +32,8 @@ security:
   basic:
     enabled: true
   user:
-    name: ${ascent.security.username:admin}
-    password: ${ascent.security.password:default}
+    name: ${ascent.config.username:admin}
+    password: ${ascent.config.password:default}
 endpoints:
   health:
     sensitive: false
@@ -58,11 +58,11 @@ server:
     ######### These properties are set by the run-wrapper.sh script in the ascent-base container #########
     # key-alias: @project.name@
     # key-store: /app/certs/server.jks
-    # key-store-password: 
+    # key-store-password:
     # trust-store: /app/certs/server-truststore.jks
     # trust-store-password:
     ######################################################################################################
-    client-auth: need  
+    client-auth: need
 ---
 spring:
   profiles: aws-prod, aws-stage
