@@ -9,7 +9,7 @@ public class ConfigAppUtil {
 	}
 
 	public static String getBaseURL() {
-		return RESTConfigService.getBaseURL("data.'ascent.config.username'", "data.'ascent.config.password'");
+		return RESTConfigService.getBaseURL("data.'username'", "data.'password'");
 		
 	}
 	
