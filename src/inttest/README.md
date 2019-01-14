@@ -17,7 +17,7 @@ src/inttest/java/gov/va/ascent/config/runner -Cucumber runner class that contain
 
 src/inttest/resources/logback-test.xml - Logback Console Appender pattern and loggers defined for this project
 
-src/inttest/resources/config/vetservices-ci.properties – DEV configuration properties such as URL are specified here.
+src/inttest/resources/config/vetservices-dev.properties – DEV configuration properties such as URL are specified here.
 
 src/inttest/resources/config/vetservices-stage.properties – STAGE configuration properties such as URL are specified here.
 
@@ -41,7 +41,7 @@ Use below sample commands to execute for different environment:
 
 DEV: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=dev -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://dev.internal.vetservices.gov:8760
 
-DEV: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<> -Dtest.env=ci -DX-Config-Token=<> -DbaseURL=https://dev.internal.vetservices.gov:8760 -Dvault.url.domain=https://dev-vault.internal.vetservices.gov/
+DEV: mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -DX-Vault-Token=<> -Dtest.env=dev -DX-Config-Token=<> -DbaseURL=https://dev.internal.vetservices.gov:8760 -Dvault.url.domain=https://dev-vault.internal.vetservices.gov/
 
 STAGE : mvn -Ddockerfile.skip=true integration-test -Pinttest -Dbrowser=HtmlUnit -Dtest.env=stage -DX-Vault-Token=<> -DX-Config-Token=<> -DbaseURL=https://stagging.internal.vetservices.gov:8760
 
